@@ -2,6 +2,7 @@
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
+import AdWrap from '../../components/AdWrap.astro';
 import { getPostBySlug, getPosts } from '../../lib/sanity';
 import { urlFor } from '../../lib/sanity';
 import { format } from 'date-fns';
@@ -101,7 +102,11 @@ const renderedContent = post.body?.map((block: any) => renderBlock(block)).join(
 					</div>
 				)}
 
+				<AdWrap slot="placeholder-post-top" width={728} height={90} />
+
 				<div class="post__content font-body text-body-md" set:html={renderedContent} />
+
+				<AdWrap slot="placeholder-post-bottom" width={300} height={250} />
 
 				{post.tags && post.tags.length > 0 && (
 					<div class="post__tags">

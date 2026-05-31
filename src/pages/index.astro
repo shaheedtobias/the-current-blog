@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import ContentCard from '../components/ContentCard.astro';
+import AdWrap from '../components/AdWrap.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { getPosts } from '../lib/sanity';
 import { urlFor } from '../lib/sanity';
@@ -34,18 +35,23 @@ try {
 				<p class="font-body text-body-lg">South Africa and global stories</p>
 			</section>
 
+			<AdWrap slot="placeholder-home-top" width={728} height={90} />
+
 			{posts.length > 0 ? (
 				<section class="posts-grid">
-					{posts.map((post) => (
-						<ContentCard
-							title={post.title}
-							excerpt={post.excerpt}
-							image={post.mainImage ? urlFor(post.mainImage).url() : undefined}
-							date={post.publishedAt ? format(new Date(post.publishedAt), 'MMM d, yyyy') : undefined}
-							category={post.categories?.[0]?.title}
-							orientation="horizontal"
-							url={`/blog/${post.slug.current}`}
-						/>
+					{posts.map((post, index) => (
+						<>
+							<ContentCard
+								title={post.title}
+								excerpt={post.excerpt}
+								image={post.mainImage ? urlFor(post.mainImage).url() : undefined}
+								date={post.publishedAt ? format(new Date(post.publishedAt), 'MMM d, yyyy') : undefined}
+								category={post.categories?.[0]?.title}
+								orientation="horizontal"
+								url={`/blog/${post.slug.current}`}
+							/>
+							{index === 2 && <AdWrap slot="placeholder-home-middle" width={300} height={250} />}
+						</>
 					))}
 				</section>
 			) : (
