@@ -1,0 +1,72 @@
+---
+interface Props {
+	adSlot?: boolean;
+	children: any;
+}
+
+const { adSlot = false, children } = Astro.props;
+---
+
+<section
+	class={`slot-grid ${adSlot ? 'slot-grid--with-ad' : 'slot-grid--no-ad'}`}
+>
+	<div class="slot-grid__content">
+		{children}
+	</div>
+	{adSlot && (
+		<aside class="slot-grid__ad" aria-label="Advertisement">
+			<slot name="ad" />
+		</aside>
+	)}
+</section>
+
+<style>
+	.slot-grid {
+		display: grid;
+		gap: var(--spacing-6);
+		margin: var(--spacing-8) 0;
+	}
+
+	/* 2-column layout (no ad slot) */
+	.slot-grid--no-ad {
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 768px) {
+		.slot-grid--no-ad {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	/* 3-column layout (with ad slot) */
+	.slot-grid--with-ad {
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 768px) {
+		.slot-grid--with-ad {
+			grid-template-columns: 2fr 1fr;
+		}
+	}
+
+	.slot-grid__content {
+		display: contents;
+	}
+
+	.slot-grid__ad {
+		position: sticky;
+		top: var(--spacing-8);
+		height: fit-content;
+		background-color: var(--color-secondary);
+		border-radius: var(--radius-md);
+		padding: var(--spacing-4);
+		border: 1px solid var(--color-border);
+	}
+
+	@media (max-width: 767px) {
+		.slot-grid__ad {
+			position: static;
+			order: -1;
+		}
+	}
+</style>

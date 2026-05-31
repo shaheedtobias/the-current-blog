@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+@theme {
+  /* Color System - Digital Editorial Palette */
+  --color-primary: #0F172A; /* Slate 900 - Headings, heavy text, structural UI */
+  --color-secondary: #F8FAFC; /* Slate 50 - Main background */
+  --color-surface: #FFFFFF; /* Card, headers, elevated elements */
+  --color-accent: #0284C7; /* Sky 600 - Category tags, text links, active states */
+  --color-muted: #475569; /* Slate 600 - Body text */
+  --color-border: #E2E8F0; /* Slate 200 - Borders */
+  --color-ad-bg: #F1F5F9; /* Slate 100 - Ad background */
+
+  /* Spacing Grid - 8px system */
+  --spacing-1: 0.25rem; /* 4px */
+  --spacing-2: 0.5rem; /* 8px - base unit */
+  --spacing-3: 0.75rem; /* 12px */
+  --spacing-4: 1rem; /* 16px - mobile padding */
+  --spacing-6: 1.5rem; /* 24px */
+  --spacing-8: 2rem; /* 32px - desktop padding */
+  --spacing-12: 3rem; /* 48px */
+  --spacing-16: 4rem; /* 64px */
+  --spacing-24: 6rem; /* 96px */
+
+  /* Container max-width */
+  --container-max: 80rem; /* 1280px */
+
+  /* Typography - Editorial Voice (Playfair Display) */
+  --font-heading: 'Playfair Display', serif;
+  --text-heading-xl: 3.052rem; /* 48.83px */
+  --text-heading-lg: 2.441rem; /* 39.06px */
+  --text-heading-md: 1.953rem; /* 31.25px */
+  --text-heading-sm: 1.563rem; /* 25px */
+  --text-heading-xs: 1.25rem; /* 20px */
+
+  /* Typography - Utility Engine (Inter) */
+  --font-body: 'Inter', sans-serif;
+  --text-body-lg: 1.125rem; /* 18px */
+  --text-body-md: 1rem; /* 16px */
+  --text-body-sm: 0.875rem; /* 14px */
+  --text-body-xs: 0.75rem; /* 12px */
+
+  /* Typography - Data/Meta Layer (JetBrains Mono) */
+  --font-meta: 'JetBrains Mono', monospace;
+  --text-meta: 0.75rem; /* 12px */
+
+  /* Line heights */
+  --leading-heading: 1.15; /* Tight line-spacing for headings */
+  --leading-body: 1.6; /* Legible line-height for body */
+  --leading-meta: 1.4; /* Compact line-height for meta */
+
+  /* Shadows - Subtle only */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  /* Transitions - Instant hover states */
+  --transition-fast: color 0.15s ease;
+  --transition-medium: all 0.2s ease;
+
+  /* Border radius */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body-md);
+  line-height: var(--leading-body);
+  color: var(--color-muted);
+  background-color: var(--color-secondary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography tokens utility classes */
+.font-heading {
+  font-family: var(--font-heading);
+  line-height: var(--leading-heading);
+  color: var(--color-primary);
+}
+
+.font-body {
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
+  color: var(--color-muted);
+}
+
+.font-meta {
+  font-family: var(--font-meta);
+  line-height: var(--leading-meta);
+  color: var(--color-muted);
+  font-size: var(--text-meta);
+}
+
+/* Heading size classes */
+.text-heading-xl {
+  font-size: var(--text-heading-xl);
+}
+
+.text-heading-lg {
+  font-size: var(--text-heading-lg);
+}
+
+.text-heading-md {
+  font-size: var(--text-heading-md);
+}
+
+.text-heading-sm {
+  font-size: var(--text-heading-sm);
+}
+
+.text-heading-xs {
+  font-size: var(--text-heading-xs);
+}
+
+/* Body size classes */
+.text-body-lg {
+  font-size: var(--text-body-lg);
+}
+
+.text-body-md {
+  font-size: var(--text-body-md);
+}
+
+.text-body-sm {
+  font-size: var(--text-body-sm);
+}
+
+.text-body-xs {
+  font-size: var(--text-body-xs);
+}
+
+/* Container */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: var(--spacing-8);
+    padding-right: var(--spacing-8);
+  }
+}
+
+/* Link hover states */
+a {
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+/* Mobile touch targets - minimum 44x44px */
+button,
+a {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Remove min-height from text-only links */
+a:not(:has(> *)) {
+  min-height: auto;
+  min-width: auto;
+  display: inline;
+}

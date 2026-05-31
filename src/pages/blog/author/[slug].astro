@@ -1,0 +1,117 @@
+---
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import Header from '../../../components/Header.astro';
+import ContentCard from '../../../components/ContentCard.astro';
+import { SITE_TITLE } from '../../../consts';
+import { getPostsByAuthor, getAuthors } from '../../../lib/sanity';
+import { urlFor } from '../../../lib/sanity';
+import { format } from 'date-fns';
+
+export async function getStaticPaths() {
+	const authors = await getAuthors();
+	return authors.map((author: any) => ({
+		params: { slug: author.slug.current },
+		props: { slug: author.slug.current, author },
+	}));
+}
+
+const { slug, author } = Astro.props;
+const posts = await getPostsByAuthor(author._id);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${author.name} - ${SITE_TITLE}`} description={`Posts by ${author.name}`} />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<section class="page-header">
+				<div class="author-header">
+					{author.image && (
+						<img src={urlFor(author.image).url()} alt={author.name} class="author-image" />
+					)}
+					<div class="author-info">
+						<h1 class="font-heading text-heading-xl">{author.name}</h1>
+						{author.bio && (
+							<p class="font-body text-body-md author-bio">
+								{author.bio.map((block: any) => block.children?.map((c: any) => c.text).join('')).join('\n')}
+							</p>
+						)}
+					</div>
+				</div>
+			</section>
+
+			{posts.length > 0 ? (
+				<section class="posts-grid">
+					{posts.map((post: any) => (
+						<ContentCard
+							title={post.title}
+							excerpt={post.excerpt}
+							image={post.mainImage ? urlFor(post.mainImage).url() : undefined}
+							date={post.publishedAt ? format(new Date(post.publishedAt), 'MMM d, yyyy') : undefined}
+							category={post.categories?.[0]?.title}
+							orientation="horizontal"
+							url={`/blog/${post.slug.current}`}
+						/>
+					))}
+				</section>
+			) : (
+				<section class="empty-state">
+					<p class="font-body text-body-md">No posts by this author yet.</p>
+				</section>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		padding: var(--spacing-12) 0;
+		margin-bottom: var(--spacing-8);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.author-header {
+		display: flex;
+		gap: var(--spacing-6);
+		align-items: flex-start;
+	}
+
+	.author-image {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.author-info h1 {
+		margin-bottom: var(--spacing-2);
+	}
+
+	.author-bio {
+		color: var(--color-muted);
+		white-space: pre-line;
+	}
+
+	.posts-grid {
+		display: grid;
+		gap: var(--spacing-6);
+		margin-bottom: var(--spacing-16);
+	}
+
+	@media (min-width: 768px) {
+		.posts-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.empty-state {
+		padding: var(--spacing-16) 0;
+		text-align: center;
+		color: var(--color-muted);
+	}
+</style>

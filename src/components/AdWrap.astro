@@ -1,0 +1,67 @@
+---
+interface Props {
+	slot: string;
+	width?: number;
+	height?: number;
+}
+
+declare global {
+	interface Window {
+		adsbygoogle: any[];
+	}
+}
+
+const { slot, width = 300, height = 250 } = Astro.props;
+---
+
+<div class="ad-wrap" style={`aspect-ratio: ${width} / ${height};`}>
+	<div class="ad-wrap__label">Advertisement</div>
+	<div class="ad-wrap__content">
+		<ins
+			class="adsbygoogle"
+			style="display:inline-block;width:${width}px;height:${height}px;"
+			data-ad-client="ca-pub-5511166701920383"
+			data-ad-slot={slot}
+		></ins>
+		<script is:inline>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+	</div>
+</div>
+
+<style>
+	.ad-wrap {
+		background-color: var(--color-ad-bg);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		min-height: 250px;
+	}
+
+	.ad-wrap__label {
+		font-family: var(--font-meta);
+		font-size: 0.5rem; /* 6px as specified */
+		color: var(--color-muted);
+		opacity: 0.6;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		padding: var(--spacing-2) var(--spacing-3);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.ad-wrap__content {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--spacing-4);
+		min-height: calc(100% - 24px); /* Subtract label height */
+	}
+
+	/* Prevent CLS by reserving space */
+	.ad-wrap::before {
+		content: '';
+		display: block;
+		padding-top: calc((1 / (var(--aspect-ratio, 1))) * 100%);
+	}
+</style>

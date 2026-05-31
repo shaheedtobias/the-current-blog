@@ -1,0 +1,97 @@
+---
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import Header from '../../../components/Header.astro';
+import ContentCard from '../../../components/ContentCard.astro';
+import { SITE_TITLE } from '../../../consts';
+import { getPostsByTag } from '../../../lib/sanity';
+import { urlFor } from '../../../lib/sanity';
+import { format } from 'date-fns';
+
+export async function getStaticPaths() {
+	const { getPosts } = await import('../../../lib/sanity');
+	const posts = await getPosts();
+	const allTags = new Set<string>();
+	posts.forEach((post: any) => {
+		post.tags?.forEach((tag: string) => allTags.add(tag));
+	});
+	return Array.from(allTags).map((tag) => ({
+		params: { tag },
+		props: { tag },
+	}));
+}
+
+const { tag } = Astro.props;
+const posts = await getPostsByTag(tag);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Tag: ${tag} - ${SITE_TITLE}`} description={`Posts tagged with ${tag}`} />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<section class="page-header">
+				<h1 class="font-heading text-heading-xl">Tag: {tag}</h1>
+				<p class="font-body text-body-md">All articles tagged with "{tag}"</p>
+			</section>
+
+			{posts.length > 0 ? (
+				<section class="posts-grid">
+					{posts.map((post: any) => (
+						<ContentCard
+							title={post.title}
+							excerpt={post.excerpt}
+							image={post.mainImage ? urlFor(post.mainImage).url() : undefined}
+							date={post.publishedAt ? format(new Date(post.publishedAt), 'MMM d, yyyy') : undefined}
+							category={post.categories?.[0]?.title}
+							orientation="horizontal"
+							url={`/blog/${post.slug.current}`}
+						/>
+					))}
+				</section>
+			) : (
+				<section class="empty-state">
+					<p class="font-body text-body-md">No posts with this tag yet.</p>
+				</section>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		padding: var(--spacing-12) 0;
+		margin-bottom: var(--spacing-8);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.page-header h1 {
+		margin-bottom: var(--spacing-2);
+	}
+
+	.page-header p {
+		color: var(--color-muted);
+	}
+
+	.posts-grid {
+		display: grid;
+		gap: var(--spacing-6);
+		margin-bottom: var(--spacing-16);
+	}
+
+	@media (min-width: 768px) {
+		.posts-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.empty-state {
+		padding: var(--spacing-16) 0;
+		text-align: center;
+		color: var(--color-muted);
+	}
+</style>

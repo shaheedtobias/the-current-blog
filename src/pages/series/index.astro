@@ -1,0 +1,117 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import ContentCard from '../../components/ContentCard.astro';
+import { SITE_TITLE } from '../../consts';
+import { getSeries } from '../../lib/sanity';
+import { urlFor } from '../../lib/sanity';
+
+const series = await getSeries();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Series - ${SITE_TITLE}`} description="Browse article series" />
+	</head>
+	<body>
+		<Header />
+		<main class="container">
+			<section class="page-header">
+				<h1 class="font-heading text-heading-xl">Series</h1>
+				<p class="font-body text-body-md">In-depth article collections</p>
+			</section>
+
+			{series.length > 0 ? (
+				<section class="series-grid">
+					{series.map((s: any) => (
+						<a href={`/series/${s.slug.current}`} class="series-card">
+							{s.coverImage && (
+								<img src={urlFor(s.coverImage).url()} alt={s.title} class="series-card__image" />
+							)}
+							<div class="series-card__content">
+								<h2 class="series-card__title font-heading text-heading-md">{s.title}</h2>
+								{s.description && (
+									<p class="series-card__description font-body text-body-sm">{s.description}</p>
+								)}
+							</div>
+						</a>
+					))}
+				</section>
+			) : (
+				<section class="empty-state">
+					<p class="font-body text-body-md">No series yet. Create your first series in the Sanity Studio.</p>
+				</section>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.page-header {
+		padding: var(--spacing-12) 0;
+		margin-bottom: var(--spacing-8);
+		border-bottom: 1px solid var(--color-border);
+	}
+
+	.page-header h1 {
+		margin-bottom: var(--spacing-2);
+	}
+
+	.page-header p {
+		color: var(--color-muted);
+	}
+
+	.series-grid {
+		display: grid;
+		gap: var(--spacing-6);
+		margin-bottom: var(--spacing-16);
+	}
+
+	@media (min-width: 768px) {
+		.series-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.series-card {
+		display: block;
+		text-decoration: none;
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		transition: var(--transition-medium);
+	}
+
+	.series-card:hover {
+		box-shadow: var(--shadow-md);
+		border-color: var(--color-accent);
+	}
+
+	.series-card__image {
+		width: 100%;
+		height: 200px;
+		object-fit: cover;
+	}
+
+	.series-card__content {
+		padding: var(--spacing-4);
+	}
+
+	.series-card__title {
+		margin-bottom: var(--spacing-2);
+		color: var(--color-primary);
+	}
+
+	.series-card__description {
+		color: var(--color-muted);
+	}
+
+	.empty-state {
+		padding: var(--spacing-16) 0;
+		text-align: center;
+		color: var(--color-muted);
+	}
+</style>
